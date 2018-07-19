@@ -1,97 +1,100 @@
-import unittest
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
+import static org.junit.Assert.*;
 
-# def highest_product_of_3(list_of_ints):
+public class Solution {
 
-#     list_of_ints.sort()
+ public static int[] getProductsOfAllIntsExceptAtIndex(int[] intArray) {
+
+    if (intArray.length < 2) {
+        throw new IllegalArgumentException("min 2 no's required");
+    }
+
+    int[] arr2 = new int[intArray.length];
+
+    int psf = 1;// psf = product sofar
+    for (int i = 0; i < intArray.length; i++) {
+        arr2[i] = psf;
+        psf *= intArray[i];
+    }
+
+    psf = 1;
+    for (int i = intArray.length - 1; i >= 0; i--) {
+        arr2[i] *= psf;
+        psf *= intArray[i];
+    }
+
+    return arr2;
     
-
-#     return list_of_ints[len(list_of_ints)-1]*list_of_ints[len(list_of_ints)-2]*list_of_ints[len(list_of_ints)-3 ]
-
-def highest_product_of_3(list_of_ints):
-
-    if (len(list_of_ints) < 3):
-        raise Exception
-
-    else:
-        high = max(list_of_ints[0], list_of_ints[1])
-        low  = min(list_of_ints[0], list_of_ints[1])
-
-        high_prod_2 = list_of_ints[0] * list_of_ints[1]
-        low_prod_2  = list_of_ints[0] * list_of_ints[1]
-
-        high_prod_3 = list_of_ints[0] * list_of_ints[1] * list_of_ints[2]
-
-        for i in list_of_ints[2:]:
-
-            high_prod_3 = max(high_prod_3,i * high_prod_2,i * low_prod_2)
-
-            high_prod_2 = max(high_prod_2,i * high,i * low)
-
-            low_prod_2 = min(low_prod_2,i * high,i * low)
-
-            high = max(high, i)
-
-            low = min(low, i)
-
-            # print(high_prod_3)
-
-        return high_prod_3
+ }
 
 
 
 
+    // tests
 
+    @Test
+    public void smallArrayTest() {
+        final int[] actual = getProductsOfAllIntsExceptAtIndex(new int[] {1, 2, 3});
+        final int[] expected = new int[] {6, 3, 2};
+        assertArrayEquals(expected, actual);
+    }
 
+    @Test
+    public void longArrayTest() {
+        final int[] actual = getProductsOfAllIntsExceptAtIndex(new int[] {8, 2, 4, 3, 1, 5});
+        final int[] expected = new int[] {120, 480, 240, 320, 960, 192};
+        assertArrayEquals(expected, actual);
+    }
 
+    @Test
+    public void arrayHasOneZeroTest() {
+        final int[] actual = getProductsOfAllIntsExceptAtIndex(new int[] {6, 2, 0, 3});
+        final int[] expected = new int[] {0, 0, 36, 0};
+        assertArrayEquals(expected, actual);
+    }
 
+    @Test
+    public void arrayHasTwoZerosTest() {
+        final int[] actual = getProductsOfAllIntsExceptAtIndex(new int[] {4, 0, 9, 1, 0});
+        final int[] expected = new int[] {0, 0, 0, 0, 0};
+        assertArrayEquals(expected, actual);
+    }
 
+    @Test
+    public void oneNegativeNumberTest() {
+        final int[] actual = getProductsOfAllIntsExceptAtIndex(new int[] {-3, 8, 4});
+        final int[] expected = new int[] {32, -12, -24};
+        assertArrayEquals(expected, actual);
+    }
 
+    @Test
+    public void allNegativeNumbersTest() {
+        final int[] actual = getProductsOfAllIntsExceptAtIndex(new int[] {-7, -1, -4, -2});
+        final int[] expected = new int[] {-8, -56, -14, -28};
+        assertArrayEquals(expected, actual);
+    }
 
+    @Test(expected = Exception.class)
+    public void exceptionWithEmptyArrayTest() {
+        getProductsOfAllIntsExceptAtIndex(new int[] {});
+    }
 
+    @Test(expected = Exception.class)
+    public void exceptionWithOneNumberTest() {
+        getProductsOfAllIntsExceptAtIndex(new int[] {1});
+    }
 
-
-
-# Tests
-
-class Test(unittest.TestCase):
-
-    def test_short_list(self):
-        actual = highest_product_of_3([1, 2, 3, 4])
-        expected = 24
-        self.assertEqual(actual, expected)
-
-    def test_longer_list(self):
-        actual = highest_product_of_3([6, 1, 3, 5, 7, 8, 2])
-        expected = 336
-        self.assertEqual(actual, expected)
-
-    def test_list_has_one_negative(self):
-        actual = highest_product_of_3([-5, 4, 8, 2, 3])
-        expected = 96
-        self.assertEqual(actual, expected)
-
-    def test_list_has_two_negatives(self):
-        actual = highest_product_of_3([-10, 1, 3, 2, -10])
-        expected = 300
-        self.assertEqual(actual, expected)
-
-    def test_list_is_all_negatives(self):
-        actual = highest_product_of_3([-5, -1, -3, -2])
-        expected = -6
-        self.assertEqual(actual, expected)
-
-    def test_error_with_empty_list(self):
-        with self.assertRaises(Exception):
-            highest_product_of_3([])
-
-    def test_error_with_one_number(self):
-        with self.assertRaises(Exception):
-            highest_product_of_3([1])
-
-    def test_error_with_two_numbers(self):
-        with self.assertRaises(Exception):
-            highest_product_of_3([1, 1])
-
-
-unittest.main(verbosity=2)
+    public static void main(String[] args) {
+        Result result = JUnitCore.runClasses(Solution.class);
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        if (result.wasSuccessful()) {
+            System.out.println("All tests passed.");
+        }
+    }
+}
